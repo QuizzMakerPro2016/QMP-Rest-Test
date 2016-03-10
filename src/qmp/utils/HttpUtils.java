@@ -11,7 +11,7 @@ import org.apache.http.impl.client.HttpClients;
 
 public class HttpUtils {
 	
-	public String getHTML(String urlToRead) throws ClientProtocolException, IOException {
+	public static String getHTML(String urlToRead) throws ClientProtocolException, IOException {
 	    String result="";
 	    CloseableHttpClient httpClient = HttpClients.createDefault();
 	    try {
