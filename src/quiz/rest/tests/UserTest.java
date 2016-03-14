@@ -8,9 +8,12 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.ws.rs.PathParam;
+
 import net.ko.framework.Ko;
 import net.ko.framework.KoSession;
 import net.ko.kobject.KListObject;
+import net.ko.kobject.KSession;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,7 +46,8 @@ public class UserTest {
 			List<KUtilisateur> users = gson.fromJson(jsonUsers, listType);
 			assertEquals(users.size(), usersFromDb.count());
 			for (int i = 0; i < users.size(); i++) {
-				assertEquals( users.get(i).getNom(), usersFromDb.get(i).getNom());			}
+				assertEquals( users.get(i).getNom(), usersFromDb.get(i).getNom());
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -74,4 +78,22 @@ public class UserTest {
 		}
 	}
 
+	@Test
+	public void testGetOne(){
+		int id=3;
+		try {
+			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, id);
+			String jsonUsers = HttpUtils.getHTML(baseUrl + "user/"+ id);
+			Type listType = new TypeToken<List<KUtilisateur>>() {
+			}.getType();
+			List<KUtilisateur> user = gson.fromJson(jsonUsers, listType);
+			
+			assertEquals(user.size(), userFromDb);
+			
+			assertEquals(user.get(id).getNom(), userFromDb.getNom());
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 }
