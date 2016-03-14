@@ -17,6 +17,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import net.ko.framework.KoHttp;
 import net.ko.framework.KoSession;
 
+import com.qmp.rest.models.KGroupe;
 import com.qmp.rest.models.KGroupe_utilisateur;
 
 /**
@@ -24,7 +25,7 @@ import com.qmp.rest.models.KGroupe_utilisateur;
  *
  */
 @Path("/usergroup")
-public class UserGroup extends RestBase {
+public class UserGroup extends CrudRestBase {
 	
 	/**
 	 * Assign a user to a group in DB using form passed in POST Request
@@ -32,25 +33,9 @@ public class UserGroup extends RestBase {
 	 * @return Error or Success Message
 	 * @throws SQLException
 	 */
-	@PUT
-	@Path("/")
-	@Consumes("application/x-www-form-urlencoded")
-	public String addOne(MultivaluedMap<String, String> formParams)
-			throws SQLException {
-		
-		KGroupe_utilisateur usergroup = KoSession.kloadOne(KGroupe_utilisateur.class, "idUtilisateur="+formParams.get("idUtilisateur").get(0)+" AND idGroupe="+formParams.get("idGroupe").get(0));
-		if(usergroup.isLoaded()){
-			return "{\"message\": \"User already in Group\"}";
-		}else{
-			usergroup = new KGroupe_utilisateur();
-		}
-				
-		String error = setValuesToKObject(usergroup, formParams);
-		if(error != null)
-			return error;
-		
-		KoHttp.getDao(KGroupe_utilisateur.class).create(usergroup);
-		return "{\"message\": \"Insert OK\"}";
+	public UserGroup() {
+		kobjectClass = KGroupe.class;
+		displayName = "usergroup";
 	}
 	
 	/**
@@ -61,7 +46,7 @@ public class UserGroup extends RestBase {
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{idUser}/{idGroup}")
-	public String deleteAnswer(@PathParam("idUser") int idUser, @PathParam("idGroup") int idGroup){
+	public String delete(@PathParam("idUser") int idUser, @PathParam("idGroup") int idGroup){
 		
 		KGroupe_utilisateur usergroup = KoSession.kloadOne(KGroupe_utilisateur.class, "idUtilisateur=" + String.valueOf(idUser) + " AND idGroupe=" + String.valueOf(idGroup));
 		if(!usergroup.isLoaded()){
