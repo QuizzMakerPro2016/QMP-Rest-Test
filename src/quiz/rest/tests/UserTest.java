@@ -58,15 +58,42 @@ public class UserTest {
 	@Test
 	public void testGetGroupUser() {
 		try {
-			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, 4);
+			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, "");
 			KListObject <KGroupe> groupsUserFromDb = userFromDb.getGroupes();
-			String jsonGroupsUser = HttpUtils.getHTML(baseUrl + "user/4/all/groupes");
+			String jsonGroupsUser = HttpUtils.getHTML(baseUrl + "user/"+userFromDb.getId()+"/all/groupes");
 			Type listType = new TypeToken<List<KGroupe>>() {
 			}.getType();
 			List<KGroupe> groups = gson.fromJson(jsonGroupsUser, listType);
 			assertEquals(groups.size(), groupsUserFromDb.count());
 			for (int i = 0; i < groups.size(); i++) {
 				assertEquals( groups.get(i).getLibelle(), groupsUserFromDb.get(i).getLibelle());			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+
+	@Test
+	public void testAddOne() {		
+		try {
+			KListObject <KUtilisateur> user = KoSession.kloadMany(KUtilisateur.class);
+			int idUser = (int) user.get(user.asAL().size()-1).getId();
+			idUser++;
+			
+			HashMap<String, Object> params = new HashMap<>();
+			params.put("id", "");
+			params.put("mail", "mailTest");
+			params.put("password", "passTest");
+			params.put("prenom", "nameTest");
+			params.put("nom", "nameTest");
+			
+			String jsonRep = HttpUtils.putHTML(baseUrl + "user/add/", params);
+			
+			KListObject <KUtilisateur> userAdded = KoSession.kloadMany(KUtilisateur.class);
+			assertEquals(user.asAL().size(), userAdded.asAL().size());
+			assertEquals(user.get(userAdded.asAL().size()-1).getNom(), "nameTest");
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
