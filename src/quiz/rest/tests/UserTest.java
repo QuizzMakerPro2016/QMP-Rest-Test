@@ -23,6 +23,7 @@ import qcm.utils.MyGsonBuilder;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.qmp.rest.models.KGroupe;
 import com.qmp.rest.models.KUtilisateur;
 
 public class UserTest {
@@ -53,7 +54,25 @@ public class UserTest {
 			e.printStackTrace();
 		}
 	}
-
+	
+	@Test
+	public void testGetGroupUser() {
+		try {
+			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, 4);
+			KListObject <KGroupe> groupsUserFromDb = userFromDb.getGroupes();
+			String jsonGroupsUser = HttpUtils.getHTML(baseUrl + "user/4/all/groupes");
+			Type listType = new TypeToken<List<KGroupe>>() {
+			}.getType();
+			List<KGroupe> groups = gson.fromJson(jsonGroupsUser, listType);
+			assertEquals(groups.size(), groupsUserFromDb.count());
+			for (int i = 0; i < groups.size(); i++) {
+				assertEquals( groups.get(i).getLibelle(), groupsUserFromDb.get(i).getLibelle());			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	@Test
 	public void testUpdateOne() {		
 		try {
@@ -77,6 +96,8 @@ public class UserTest {
 			e.printStackTrace();
 		}
 	}
+	
+	
 
 	@Test
 	public void testGetOne(){
