@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<controllers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://api.kobject.net/xml/controller-1.0.0.25b.xsd">
+<class name="KDomaine">
+        <member max="21845" name="libelle" required="1" type="string"/>
+    </class>
+    <class name="KGroupe">
+        <member max="50" name="code" required="1" type="string"/>
+        <member max="250" name="libelle" required="1" type="string"/>
+    </class>
+    <class name="KGroupe_questionnaire">
+        <member max="11" name="idGroupe" required="1" type="int"/>
+        <member max="11" name="idQuestionnaire" required="1" type="int"/>
+    </class>
+    <class name="KGroupe_utilisateur">
+        <member max="11" name="idGroupe" required="1" type="int"/>
+        <member max="11" name="idUtilisateur" required="1" type="int"/>
+    </class>
+    <class name="KQuestion">
+        <member max="11" name="idQuestionnaire" required="1" type="int"/>
+        <member max="21845" name="libelle" required="1" type="string"/>
+        <member max="5" name="type" required="1" type="boolean"/>
+    </class>
+    <class name="KQuestionnaire">
+        <member max="10" name="date" required="1" type="date"/>
+        <member max="11" name="idDomaine" required="1" type="int"/>
+        <member max="21845" name="libelle" required="1" type="string"/>
+    </class>
+    <class name="KRang">
+        <member max="250" name="libelle" required="1" type="string"/>
+    </class>
+    <class name="KRealisation">
+        <member max="10" name="date" required="1" type="date"/>
+        <member max="11" name="idQuestionnaire" required="1" type="int"/>
+        <member max="11" name="idUtilisateur" required="1" type="int"/>
+        <member max="11" name="score" required="1" type="int"/>
+    </class>
+    <class name="KReponse">
+        <member max="5" name="good" required="1" type="boolean"/>
+        <member max="11" name="idQuestion" required="1" type="int"/>
+        <member max="21845" name="libelle" required="1" type="string"/>
+    </class>
+    <class name="KReponse_utilisateur">
+        <member max="11" name="idRealisation" required="1" type="int"/>
+        <member max="11" name="idReponse" required="1" type="int"/>
+    </class>
+    <class name="KUtilisateur">
+        <member max="11" name="idRang" required="1" type="int"/>
+        <member max="150" name="mail" required="1" type="string"/>
+        <member max="45" name="nom" required="0" type="string"/>
+        <member max="60" name="password" required="1" type="string"/>
+        <member max="45" name="prenom" required="0" type="string"/>
+    </class>
+</controllers>

@@ -1,13 +1,11 @@
-package qmp.utils;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.qmp.adapters.KlistObjectAdapter;
+package qcm.utils;
 
 import net.ko.kobject.KListObject;
 
-public class MyGsonBuilder {
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+public class MyGsonBuilder {
 	public static Gson create(){
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		gsonBuilder.registerTypeAdapter(KListObject.class, new KlistObjectAdapter());

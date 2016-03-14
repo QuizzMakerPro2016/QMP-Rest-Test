@@ -1,0 +1,35 @@
+#Fichier de configuration KoCreator version 1.0.0.26
+#Thu Mar 10 11:01:04 CET 2016
+actionsName=action.do
+base=rest-qcm
+cacheType=1
+classes=domaine;groupe;groupe_questionnaire;groupe_utilisateur;question;questionnaire;rang;realisation;reponse;reponse_utilisateur;utilisateur
+clientDebug=false
+clientDebugOptions=true
+constraintsDepth=1
+controlClass=
+cssFile=css/css.properties
+dbOptions=
+dbType=mysql
+debug=true
+erFile=conf/validation/er.properties
+footerURL=WEB-INF/footer.jsp
+headerURL=WEB-INF/header.jsp
+host=127.0.0.1
+koDateFormat=dd/MM/yyyy
+logFormat=html
+mappingFile=conf/mox.xml
+messagesFile=conf/validation/messages.properties
+nullValue=&nbsp;
+package=qcm.models
+password=
+pluginVersion=1.0.0.26
+port=3306
+schema.ddl=validate
+sqlDateFormat=yyyy-MM-dd
+useCache=false
+useLog=true
+useSetters=false
+user=root
+validationFile=conf/kox.xml
+webApp=false

@@ -16,7 +16,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import net.ko.framework.KoHttp;
 import net.ko.kobject.KListObject;
 
-import com.google.gson.Gson;
 import com.qmp.rest.models.KDomaine;
 
 /**

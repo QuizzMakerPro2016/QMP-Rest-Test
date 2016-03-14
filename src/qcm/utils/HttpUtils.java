@@ -1,4 +1,4 @@
-package qmp.utils;
+package qcm.utils;
 
 import java.io.IOException;
 
@@ -10,7 +10,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 public class HttpUtils {
-	
 	public static String getHTML(String urlToRead) throws ClientProtocolException, IOException {
 	    String result="";
 	    CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -19,9 +18,8 @@ public class HttpUtils {
 	        ResponseHandler<String> responseHandler = new BasicResponseHandler();
 	        result = httpClient.execute(getRequest, responseHandler);
 	    }finally {
-	        httpClient.close();;
+	        httpClient.close();
 	    }
 	    return result;
 	}
-
 }

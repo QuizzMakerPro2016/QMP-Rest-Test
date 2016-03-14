@@ -13,12 +13,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
-import com.google.gson.Gson;
-import com.qmp.rest.models.KReponse;
-
 import net.ko.framework.KoHttp;
 import net.ko.kobject.KListObject;
 
+import com.google.gson.Gson;
+import com.qmp.rest.models.KReponse;
 
 
 /**
@@ -29,7 +28,7 @@ import net.ko.kobject.KListObject;
 public class Answer extends RestBase{
 
 	/**
-	 * Return all answers
+	 * Index Function
 	 * @return JSON List of all answers
 	 */
 	@GET
