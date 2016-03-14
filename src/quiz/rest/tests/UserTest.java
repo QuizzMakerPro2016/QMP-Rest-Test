@@ -1,10 +1,11 @@
 package quiz.rest.tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
 
 import net.ko.framework.Ko;
@@ -28,7 +29,7 @@ public class UserTest {
 	@BeforeClass
 	public static void setUp() {
 		gson = MyGsonBuilder.create();
-		baseUrl = "http://127.0.0.1:8080/Quiz-Rest/rest/";
+		baseUrl = "http://127.0.0.1:8080/QMP-Rest/rest/";
 		Ko.kstart();
 	}
 
@@ -50,8 +51,27 @@ public class UserTest {
 	}
 
 	@Test
-	public void testAddOne() {
-		fail("Not yet implemented");
+	public void testUpdateOne() {		
+		try {
+			KUtilisateur user = KoSession.kloadOne(KUtilisateur.class, "");
+			int idUser = (int) user.getId();
+			
+			HashMap<String, Object> params = new HashMap<>();
+			params.put("id", user.getId());
+			params.put("mail", user.getMail()+"-up");
+			params.put("password", user.getPassword()+"-up");
+			params.put("prenom", user.getPrenom()+"-up");
+			params.put("nom", user.getNom()+"-up");
+			
+			String jsonRep = HttpUtils.postHTML(baseUrl + "user/update/"+String.valueOf(idUser), params);
+			
+			KUtilisateur userUpdated = KoSession.kloadOne(KUtilisateur.class, "id="+idUser);
+			assertNotEquals(user.getNom(), userUpdated.getNom());
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -2,6 +2,8 @@ package qcm.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -28,16 +30,18 @@ public class HttpUtils {
 	    return result;
 	}
 	
-	//Not Finished
-	public static String postHTML(String urlToRead) throws ClientProtocolException, IOException {
+	public static String postHTML(String urlToRead, HashMap<String, Object> params) throws ClientProtocolException, IOException {
 	    String result="";
 	    CloseableHttpClient httpClient = HttpClients.createDefault();
 	    try {
 	        HttpPost postRequest = new HttpPost(urlToRead);
 	        
 	        ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-	        postParameters.add(new BasicNameValuePair("param1", "param1_value"));
-	        postParameters.add(new BasicNameValuePair("param2", "param2_value"));
+	        
+	        for (Entry<String, Object> entry : params.entrySet())
+	        {
+	        	postParameters.add(new BasicNameValuePair(entry.getKey(), (String) entry.getValue().toString()));
+	        }
 
 	        postRequest.setEntity(new UrlEncodedFormEntity(postParameters));	        
 	        ResponseHandler<String> responseHandler = new BasicResponseHandler();
