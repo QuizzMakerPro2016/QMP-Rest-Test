@@ -73,8 +73,6 @@ public class UserTest {
 	public void testAddOne() {		
 		try {
 			KListObject <KUtilisateur> user = KoSession.kloadMany(KUtilisateur.class);
-			int idUser = (int) user.get(user.asAL().size()-1).getId();
-			idUser++;
 			
 			HashMap<String, Object> params = new HashMap<>();
 			params.put("id", "");
@@ -82,12 +80,13 @@ public class UserTest {
 			params.put("password", "passTest");
 			params.put("prenom", "nameTest");
 			params.put("nom", "nameTest");
+			params.put("idRang", "1");
 			
 			String jsonRep = HttpUtils.putHTML(baseUrl + "user/add/", params);
 			
 			KListObject <KUtilisateur> userAdded = KoSession.kloadMany(KUtilisateur.class);
-			assertEquals(user.asAL().size(), userAdded.asAL().size());
-			assertEquals(user.get(userAdded.asAL().size()-1).getNom(), "nameTest");
+			assertNotEquals(user.asAL().size(), userAdded.asAL().size());
+			assertEquals(userAdded.get(userAdded.asAL().size()-1).getNom(), "nameTest");
 			
 		} catch (IOException e) {
 			e.printStackTrace();
