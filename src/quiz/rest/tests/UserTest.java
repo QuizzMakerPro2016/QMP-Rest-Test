@@ -47,7 +47,6 @@ public class UserTest {
 				assertEquals( users.get(i).getNom(), usersFromDb.get(i).getNom());
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -65,7 +64,6 @@ public class UserTest {
 			for (int i = 0; i < groups.size(); i++) {
 				assertEquals( groups.get(i).getLibelle(), groupsUserFromDb.get(i).getLibelle());			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -92,7 +90,6 @@ public class UserTest {
 			assertEquals(user.get(userAdded.asAL().size()-1).getNom(), "nameTest");
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -116,7 +113,6 @@ public class UserTest {
 			assertNotEquals(user.getNom(), userUpdated.getNom());
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -149,7 +145,7 @@ public class UserTest {
 			assertEquals(newUser.isLoaded(), false);
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 }
