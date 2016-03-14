@@ -9,6 +9,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -69,6 +70,19 @@ public class HttpUtils {
 	        putRequest.setEntity(new UrlEncodedFormEntity(postParameters));	        
 	        ResponseHandler<String> responseHandler = new BasicResponseHandler();
 	        result = httpClient.execute(putRequest, responseHandler);
+	    }finally {
+	        httpClient.close();
+	    }
+	    return result;
+	}
+	
+	public static String deleteHTML(String urlToRead) throws ClientProtocolException, IOException {
+	    String result="";
+	    CloseableHttpClient httpClient = HttpClients.createDefault();
+	    try {
+	        HttpDelete deleteRequest = new HttpDelete(urlToRead);
+	        ResponseHandler<String> responseHandler = new BasicResponseHandler();
+	        result = httpClient.execute(deleteRequest, responseHandler);
 	    }finally {
 	        httpClient.close();
 	    }

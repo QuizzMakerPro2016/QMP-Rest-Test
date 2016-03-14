@@ -1,19 +1,16 @@
 package quiz.rest.tests;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.ws.rs.PathParam;
-
 import net.ko.framework.Ko;
 import net.ko.framework.KoSession;
 import net.ko.kobject.KListObject;
-import net.ko.kobject.KSession;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,7 +37,7 @@ public class UserTest {
 	@Test
 	public void testGetAll() {
 		try {
-			KListObject<KUtilisateur> usersFromDb = KoSession.kloadMany(KUtilisateur.class);
+			KListObject<KUtilisateur> usersFromDb = KoSession.kloadMany(KUtilisateur.class, "");
 			String jsonUsers = HttpUtils.getHTML(baseUrl + "user/all");
 			Type listType = new TypeToken<List<KUtilisateur>>() {
 			}.getType();
@@ -113,7 +110,7 @@ public class UserTest {
 			params.put("prenom", user.getPrenom()+"-up");
 			params.put("nom", user.getNom()+"-up");
 			
-			String jsonRep = HttpUtils.postHTML(baseUrl + "user/update/"+String.valueOf(idUser), params);
+			HttpUtils.postHTML(baseUrl + "user/update/"+String.valueOf(idUser), params);
 			
 			KUtilisateur userUpdated = KoSession.kloadOne(KUtilisateur.class, "id="+idUser);
 			assertNotEquals(user.getNom(), userUpdated.getNom());
@@ -128,17 +125,28 @@ public class UserTest {
 
 	@Test
 	public void testGetOne(){
-		int id=3;
 		try {
-			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, id);
+			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, "");
+			int id = (int) userFromDb.getId();
+
 			String jsonUsers = HttpUtils.getHTML(baseUrl + "user/"+ id);
-			Type listType = new TypeToken<List<KUtilisateur>>() {
-			}.getType();
-			List<KUtilisateur> user = gson.fromJson(jsonUsers, listType);
+
+			KUtilisateur user = gson.fromJson(jsonUsers, KUtilisateur.class);
+						
+			assertEquals(user.getNom(), userFromDb.getNom());
 			
-			assertEquals(user.size(), userFromDb);
-			
-			assertEquals(user.get(id).getNom(), userFromDb.getNom());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testDeleteOne(){
+		try {
+			KUtilisateur user = KoSession.kloadOne(KUtilisateur.class, "");
+			HttpUtils.deleteHTML(baseUrl + "user/"+user.getId());
+			KUtilisateur newUser = KoSession.kloadOne(KUtilisateur.class, "id="+user.getId());
+			assertEquals(newUser.isLoaded(), false);
 			
 		} catch (Exception e) {
 			// TODO: handle exception
