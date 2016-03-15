@@ -54,7 +54,7 @@ public class UserTest {
 	@Test
 	public void testGetGroupUser() {
 		try {
-			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, "");
+			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class);
 			KListObject <KGroupe> groupsUserFromDb = userFromDb.getGroupes();
 			String jsonGroupsUser = HttpUtils.getHTML(baseUrl + "user/"+userFromDb.getId()+"/all/groupes");
 			Type listType = new TypeToken<List<KGroupe>>() {
@@ -96,7 +96,7 @@ public class UserTest {
 	@Test
 	public void testUpdateOne() {		
 		try {
-			KUtilisateur user = KoSession.kloadOne(KUtilisateur.class, "");
+			KUtilisateur user = KoSession.kloadOne(KUtilisateur.class);
 			int idUser = (int) user.getId();
 			
 			HashMap<String, Object> params = new HashMap<>();
@@ -114,14 +114,12 @@ public class UserTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
+	}	
 	
-	
-
 	@Test
 	public void testGetOne(){
 		try {
-			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, "");
+			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class);
 			int id = (int) userFromDb.getId();
 
 			String jsonUsers = HttpUtils.getHTML(baseUrl + "user/"+ id);
@@ -138,7 +136,7 @@ public class UserTest {
 	@Test
 	public void testDeleteOne(){
 		try {
-			KUtilisateur user = KoSession.kloadOne(KUtilisateur.class, "");
+			KUtilisateur user = KoSession.kloadOne(KUtilisateur.class);
 			HttpUtils.deleteHTML(baseUrl + "user/"+user.getId());
 			KUtilisateur newUser = KoSession.kloadOne(KUtilisateur.class, "id="+user.getId());
 			assertEquals(newUser.isLoaded(), false);
@@ -147,4 +145,35 @@ public class UserTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void testConnexion(){
+		try {
+			KUtilisateur user = KoSession.kloadOne(KUtilisateur.class);
+			
+			//Connection of a user
+			HashMap<String, Object> params = new HashMap<>();
+			params.put("login", user.getMail());
+			params.put("password",user.getPassword());		
+			
+			String resultString = HttpUtils.postHTML(baseUrl + "user/connect", params);	
+			HashMap<String, String> result = gson.fromJson(resultString, HashMap.class);
+			
+			//Connection of a false user
+			HashMap<String, Object> paramsFalse = new HashMap<>();
+			paramsFalse.put("login", user.getMail());
+			paramsFalse.put("password", "fauxpassword");
+			
+			String resultStringFalse = HttpUtils.postHTML(baseUrl + "user/connect", paramsFalse);	
+			HashMap<String, String> resultFalse = gson.fromJson(resultStringFalse, HashMap.class);
+			
+			//Asserting for each user that he is connected or not
+			assertEquals(true, result.get("connected"));
+			assertNotEquals(true, resultFalse.get("connected"));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 }
