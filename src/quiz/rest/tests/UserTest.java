@@ -1,7 +1,6 @@
 package quiz.rest.tests;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -24,6 +23,8 @@ import qcm.utils.MyGsonBuilder;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.qmp.rest.models.KGroupe;
+import com.qmp.rest.models.KQuestionnaire;
+import com.qmp.rest.models.KRealisation;
 import com.qmp.rest.models.KUtilisateur;
 
 public class UserTest {
@@ -74,6 +75,25 @@ public class UserTest {
 	}
 	
 	@Test
+	public void testGetRealisations() {
+		try {
+			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, "");
+			KListObject <KRealisation> realUserFromDb = userFromDb.getRealisations();
+			String jsonRealUser = HttpUtils.getHTML(baseUrl + "user/"+userFromDb.getId()+"/all/realisations");
+			Type listType = new TypeToken<List<KRealisation>>() {
+			}.getType();
+			List<KRealisation> realisations = gson.fromJson(jsonRealUser, listType);
+			assertEquals(realisations.size(), realUserFromDb.count());
+			for (int i = 0; i < realisations.size(); i++) {
+				assertEquals(realisations.get(i).getScore(), realUserFromDb.get(i).getScore());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
 	public void testUpdateOne() {		
 		try {
 			KUtilisateur user = KoSession.kloadOne(KUtilisateur.class, "");
@@ -95,23 +115,18 @@ public class UserTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	
+	}	
 
 	@Test
 	public void testGetOne(){
-		int id=3;
 		try {
-			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, id);
-			String jsonUsers = HttpUtils.getHTML(baseUrl + "user/"+ id);
+			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, "");
+			String jsonUsers = HttpUtils.getHTML(baseUrl + "user/"+ userFromDb.getId());
 			Type listType = new TypeToken<List<KUtilisateur>>() {
 			}.getType();
-			List<KUtilisateur> user = gson.fromJson(jsonUsers, listType);
+			KUtilisateur user = gson.fromJson(jsonUsers, listType);
 			
-			assertEquals(user.size(), userFromDb);
-			
-			assertEquals(user.get(id).getNom(), userFromDb.getNom());
+			assertEquals(user.getNom(), userFromDb.getNom());
 			
 		} catch (Exception e) {
 			// TODO: handle exception
