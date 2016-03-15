@@ -1,18 +1,17 @@
 package quiz.rest.tests;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.ws.rs.PathParam;
-
 import net.ko.framework.Ko;
 import net.ko.framework.KoSession;
 import net.ko.kobject.KListObject;
-import net.ko.kobject.KSession;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,7 +40,7 @@ public class UserTest {
 	@Test
 	public void testGetAll() {
 		try {
-			KListObject<KUtilisateur> usersFromDb = KoSession.kloadMany(KUtilisateur.class);
+			KListObject<KUtilisateur> usersFromDb = KoSession.kloadMany(KUtilisateur.class, "");
 			String jsonUsers = HttpUtils.getHTML(baseUrl + "user/all");
 			Type listType = new TypeToken<List<KUtilisateur>>() {
 			}.getType();
@@ -51,7 +50,6 @@ public class UserTest {
 				assertEquals( users.get(i).getNom(), usersFromDb.get(i).getNom());
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -59,9 +57,9 @@ public class UserTest {
 	@Test
 	public void testGetGroupUser() {
 		try {
-			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, 4);
+			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, "");
 			KListObject <KGroupe> groupsUserFromDb = userFromDb.getGroupes();
-			String jsonGroupsUser = HttpUtils.getHTML(baseUrl + "user/4/all/groupes");
+			String jsonGroupsUser = HttpUtils.getHTML(baseUrl + "user/"+userFromDb.getId()+"/all/groupes");
 			Type listType = new TypeToken<List<KGroupe>>() {
 			}.getType();
 			List<KGroupe> groups = gson.fromJson(jsonGroupsUser, listType);
@@ -69,7 +67,31 @@ public class UserTest {
 			for (int i = 0; i < groups.size(); i++) {
 				assertEquals( groups.get(i).getLibelle(), groupsUserFromDb.get(i).getLibelle());			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+
+	@Test
+	public void testAddOne() {		
+		try {
+			KListObject <KUtilisateur> user = KoSession.kloadMany(KUtilisateur.class);
+			
+			HashMap<String, Object> params = new HashMap<>();
+			params.put("id", "");
+			params.put("mail", "mailTest");
+			params.put("password", "passTest");
+			params.put("prenom", "nameTest");
+			params.put("nom", "nameTest");
+			params.put("idRang", "1");
+			
+			String jsonRep = HttpUtils.putHTML(baseUrl + "user/add/", params);
+			
+			KListObject <KUtilisateur> userAdded = KoSession.kloadMany(KUtilisateur.class);
+			assertNotEquals(user.asAL().size(), userAdded.asAL().size());
+			assertEquals(userAdded.get(userAdded.asAL().size()-1).getNom(), "nameTest");
+			
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -106,13 +128,12 @@ public class UserTest {
 			params.put("prenom", user.getPrenom()+"-up");
 			params.put("nom", user.getNom()+"-up");
 			
-			String jsonRep = HttpUtils.postHTML(baseUrl + "user/update/"+String.valueOf(idUser), params);
+			HttpUtils.postHTML(baseUrl + "user/update/"+String.valueOf(idUser), params);
 			
 			KUtilisateur userUpdated = KoSession.kloadOne(KUtilisateur.class, "id="+idUser);
 			assertNotEquals(user.getNom(), userUpdated.getNom());
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}	
@@ -127,9 +148,29 @@ public class UserTest {
 			KUtilisateur user = gson.fromJson(jsonUsers, listType);
 			
 			assertEquals(user.getNom(), userFromDb.getNom());
+			int id = (int) userFromDb.getId();
+
+			String jsonUsers = HttpUtils.getHTML(baseUrl + "user/"+ id);
+
+			KUtilisateur user = gson.fromJson(jsonUsers, KUtilisateur.class);
+						
+			assertEquals(user.getNom(), userFromDb.getNom());
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testDeleteOne(){
+		try {
+			KUtilisateur user = KoSession.kloadOne(KUtilisateur.class, "");
+			HttpUtils.deleteHTML(baseUrl + "user/"+user.getId());
+			KUtilisateur newUser = KoSession.kloadOne(KUtilisateur.class, "id="+user.getId());
+			assertEquals(newUser.isLoaded(), false);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
