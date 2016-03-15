@@ -13,6 +13,7 @@ import net.ko.framework.KoSession;
 import net.ko.kobject.KListObject;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import qcm.utils.HttpUtils;
@@ -21,6 +22,8 @@ import qcm.utils.MyGsonBuilder;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.qmp.rest.models.KGroupe;
+import com.qmp.rest.models.KQuestion;
+import com.qmp.rest.models.KQuestionnaire;
 import com.qmp.rest.models.KUtilisateur;
 
 public class UserTest {
@@ -93,6 +96,7 @@ public class UserTest {
 		}
 	}
 	
+	@Ignore
 	@Test
 	public void testUpdateOne() {		
 		try {
@@ -129,6 +133,48 @@ public class UserTest {
 			KUtilisateur user = gson.fromJson(jsonUsers, KUtilisateur.class);
 						
 			assertEquals(user.getNom(), userFromDb.getNom());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testGetQuestions(){
+		try {
+			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, "");
+			KListObject<KQuestion> questionsFromDB = userFromDb.getQuestions();
+			
+			int id = (int) userFromDb.getId();
+
+			String jsonUsers = HttpUtils.getHTML(baseUrl + "user/"+ id+"/all/questions");
+
+			Type listType = new TypeToken<List<KQuestion>>() {
+			}.getType();
+			List<KQuestion> questions = gson.fromJson(jsonUsers, listType);
+			
+			assertEquals(questions.size(), questionsFromDB.count());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testGetQuizzes(){
+		try {
+			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, "");
+			KListObject<KQuestionnaire> quizzesFromDB = userFromDb.getQuestionnaires();
+			
+			int id = (int) userFromDb.getId();
+
+			String jsonUsers = HttpUtils.getHTML(baseUrl + "user/"+ id+"/all/questionnaires");
+
+			Type listType = new TypeToken<List<KQuestion>>() {
+			}.getType();
+			List<KQuestionnaire> quizzes = gson.fromJson(jsonUsers, listType);
+			
+			assertEquals(quizzes.size(), quizzesFromDB.count());
 			
 		} catch (Exception e) {
 			e.printStackTrace();
