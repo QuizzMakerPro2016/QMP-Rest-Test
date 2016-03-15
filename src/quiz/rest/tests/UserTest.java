@@ -24,6 +24,7 @@ import com.google.gson.reflect.TypeToken;
 import com.qmp.rest.models.KGroupe;
 import com.qmp.rest.models.KQuestion;
 import com.qmp.rest.models.KQuestionnaire;
+import com.qmp.rest.models.KRealisation;
 import com.qmp.rest.models.KUtilisateur;
 
 public class UserTest {
@@ -98,6 +99,25 @@ public class UserTest {
 	
 	@Ignore
 	@Test
+	public void testGetRealisations() {
+		try {
+			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, "");
+			KListObject <KRealisation> realUserFromDb = userFromDb.getRealisations();
+			String jsonRealUser = HttpUtils.getHTML(baseUrl + "user/"+userFromDb.getId()+"/all/realisations");
+			Type listType = new TypeToken<List<KRealisation>>() {
+			}.getType();
+			List<KRealisation> realisations = gson.fromJson(jsonRealUser, listType);
+			assertEquals(realisations.size(), realUserFromDb.count());
+			for (int i = 0; i < realisations.size(); i++) {
+				assertEquals(realisations.get(i).getScore(), realUserFromDb.get(i).getScore());
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
 	public void testUpdateOne() {		
 		try {
 			KUtilisateur user = KoSession.kloadOne(KUtilisateur.class, "");
@@ -118,14 +138,13 @@ public class UserTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	
+	}	
 
 	@Test
 	public void testGetOne(){
 		try {
 			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, "");
+			
 			int id = (int) userFromDb.getId();
 
 			String jsonUsers = HttpUtils.getHTML(baseUrl + "user/"+ id);
