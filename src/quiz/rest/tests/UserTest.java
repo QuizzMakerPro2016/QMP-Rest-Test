@@ -103,10 +103,10 @@ public class UserTest {
 		try {
 			KUtilisateur userFromDb = KoSession.kloadOne(KUtilisateur.class, "");
 			KListObject <KRealisation> realUserFromDb = userFromDb.getRealisations();
-			String jsonRealUser = HttpUtils.getHTML(baseUrl + "user/"+userFromDb.getId()+"/all/realisations");
+			String jsonRealisationUser = HttpUtils.getHTML(baseUrl + "user/"+userFromDb.getId()+"/all/realisations");
 			Type listType = new TypeToken<List<KRealisation>>() {
 			}.getType();
-			List<KRealisation> realisations = gson.fromJson(jsonRealUser, listType);
+			List<KRealisation> realisations = gson.fromJson(jsonRealisationUser, listType);
 			assertEquals(realisations.size(), realUserFromDb.count());
 			for (int i = 0; i < realisations.size(); i++) {
 				assertEquals(realisations.get(i).getScore(), realUserFromDb.get(i).getScore());
@@ -242,4 +242,30 @@ public class UserTest {
 		}
 	}
 	
+	@Test
+	public void testGetQuizzWorkable(){
+		try {
+			//Instantiation of user. 
+			//Recove the group of this user and add in list the quizzes associate at this group
+			KUtilisateur user = KoSession.kloadOne(KUtilisateur.class, "");
+			KListObject<KQuestionnaire> quizes = new KListObject<KQuestionnaire>(KQuestionnaire.class);
+			KListObject<KGroupe> quizzUserFromBd=user.getGroupes();
+			for (KGroupe gr : quizzUserFromBd) {
+				quizes.addAll(gr.getQuestionnaires());
+			}
+			
+			String jsonQuizzUsers = HttpUtils.getHTML(baseUrl + "user/"+ user.getId()+"/quiz");
+			Type listType = new TypeToken<List<KQuestionnaire>>() {
+			}.getType();
+			List<KQuestionnaire> questionnaire = gson.fromJson(jsonQuizzUsers, listType);
+			
+			assertEquals(questionnaire.size(), quizes.count());
+			for (int i = 0; i < questionnaire.size(); i++) {
+				assertEquals(questionnaire.get(i).getLibelle(), quizes.get(i).getLibelle());
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
